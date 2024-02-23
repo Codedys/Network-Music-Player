@@ -1,5 +1,5 @@
 import socket
-from library import Library
+# from library import Library
 
 #create a socket
 #bind socket to host
@@ -14,23 +14,38 @@ sock.bind(server_address)
 
 sock.listen(1)
 
-path = "/home/gerald/Downloads/Music"
+path = "/home/gerald/Downloads/Music/humble.mp3"
 
-songs = Library(path)
+# songs = Library(path)
 
 while True:
     connection,client_address = sock.accept()
 
     try:
        
-        print("connection to  ",client_address," sucess")
+       
 
         while True:
 
-           print("fucntion")
+            data_input = connection.recv(1024).decode('utf-8')
+            data_output = None
 
+            if data_input == "START":
+                # file = songs.next_song()
+                print("connection to  ",client_address," sucess")
 
+                with open (path,'rb') as f:
+                    data_output = f.read(1024)
+                    while data_output:
+                        connection.sendall(data_output)
+                        data_output = f.read(1024)
+                    
 
+                
+               
+            elif data_input == "STOP":
+                break
+                   
     finally:
         connection.close()
 
